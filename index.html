@@ -12,6 +12,9 @@
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         <div class="flex items-center gap-2">
+          <button id="mobile-menu-toggle" class="p-2 md:hidden hover:bg-gray-100 rounded-full transition-colors mr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
           <a href="#" id="logo-link" class="text-3xl font-blackletter tracking-wider text-black hover:opacity-70 transition-opacity">Guss Hairs</a>
         </div>
         
@@ -57,6 +60,61 @@
         </div>
       </div>
     </header>
+
+    <!-- Mobile Menu Drawer -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+      <div id="mobile-menu-content" class="absolute top-0 left-0 h-full w-[80%] max-w-xs bg-white shadow-2xl p-8 -translate-x-full transition-transform duration-300 ease-out flex flex-col">
+        <div class="flex items-center justify-between mb-12">
+          <span class="text-2xl font-blackletter tracking-wider">Guss Hairs</span>
+          <button id="mobile-menu-close" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        
+        <nav class="flex flex-col gap-6">
+          <a href="#" class="mobile-nav-link text-xl font-serif font-bold italic hover:text-gray-500 transition-colors" data-target="home">Home</a>
+          <a href="#" class="mobile-nav-link text-xl font-serif font-bold italic hover:text-gray-500 transition-colors" data-target="shop">Shop All</a>
+          
+          <div class="space-y-4">
+            <button class="mobile-menu-accordion-btn w-full flex items-center justify-between text-xl font-serif font-bold italic hover:text-gray-500 transition-colors">
+              Wigs
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="mobile-menu-accordion-content hidden pl-4 flex flex-col gap-3">
+              <a href="#" class="mobile-nav-link text-lg font-serif font-bold italic text-gray-500 hover:text-black" data-wig-type="All">All Wigs</a>
+              <a href="#" class="mobile-nav-link text-lg font-serif font-bold italic text-gray-500 hover:text-black" data-wig-type="Bone Straight">Bone Straight</a>
+              <a href="#" class="mobile-nav-link text-lg font-serif font-bold italic text-gray-500 hover:text-black" data-wig-type="Pixie Cut">Pixie Cut</a>
+              <a href="#" class="mobile-nav-link text-lg font-serif font-bold italic text-gray-500 hover:text-black" data-wig-type="Deep Wave">Deep Wave</a>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <button class="mobile-menu-accordion-btn w-full flex items-center justify-between text-xl font-serif font-bold italic hover:text-gray-500 transition-colors">
+              Bundles
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="mobile-menu-accordion-content hidden pl-4 flex flex-col gap-3">
+              <a href="#" class="mobile-nav-link text-lg font-serif font-bold italic text-gray-500 hover:text-black" data-bundle-type="All">All Bundles</a>
+              <a href="#" class="mobile-nav-link text-lg font-serif font-bold italic text-gray-500 hover:text-black" data-bundle-type="Straight">Straight</a>
+              <a href="#" class="mobile-nav-link text-lg font-serif font-bold italic text-gray-500 hover:text-black" data-bundle-type="Body Wave">Body Wave</a>
+              <a href="#" class="mobile-nav-link text-lg font-serif font-bold italic text-gray-500 hover:text-black" data-bundle-type="Deep Wave">Deep Wave</a>
+              <a href="#" class="mobile-nav-link text-lg font-serif font-bold italic text-gray-500 hover:text-black" data-bundle-type="Kinky Curly">Kinky Curly</a>
+            </div>
+          </div>
+
+          <a href="#" class="mobile-nav-link text-xl font-serif font-bold italic hover:text-gray-500 transition-colors" data-target="about">About</a>
+          <a href="#" class="mobile-nav-link text-xl font-serif font-bold italic hover:text-gray-500 transition-colors" data-target="contact">Contact</a>
+        </nav>
+
+        <div class="mt-auto pt-8 border-t border-gray-100">
+          <p class="text-xs font-serif font-bold italic text-gray-400 uppercase tracking-widest mb-4">Follow Us</p>
+          <div class="flex gap-4">
+            <a href="#" class="text-gray-400 hover:text-black transition-colors">Instagram</a>
+            <a href="#" class="text-gray-400 hover:text-black transition-colors">Facebook</a>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Hero Section (Slider) -->
     <section id="hero-section" class="relative h-[60vh] md:h-[80vh] bg-black text-white overflow-hidden">

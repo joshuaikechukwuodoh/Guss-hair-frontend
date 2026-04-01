@@ -30,6 +30,14 @@ async function init() {
   const contactSection = document.getElementById('contact-section')!;
   const contactForm = document.getElementById('contact-form') as HTMLFormElement;
 
+  // Mobile Menu Elements
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle')!;
+  const mobileMenu = document.getElementById('mobile-menu')!;
+  const mobileMenuContent = document.getElementById('mobile-menu-content')!;
+  const mobileMenuClose = document.getElementById('mobile-menu-close')!;
+  const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+  const accordionBtns = document.querySelectorAll('.mobile-menu-accordion-btn');
+
   let allProducts: Product[] = [];
 
   const showShop = () => {
@@ -55,25 +63,25 @@ async function init() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const renderFilteredProducts = (category: string) => {
+    showShop();
+    const filtered = category === 'All Products' 
+      ? allProducts 
+      : allProducts.filter(p => p.category === category);
+    
+    renderProducts(filtered, productGrid, (product: Product) => {
+      addToCart(product);
+      updateUI();
+      showNotification(`${product.name} added to cart!`);
+    });
+  };
+
   // 1. Fetch and Render Products
   try {
     allProducts = await fetchProducts();
     loadingState.classList.add('hidden');
     productGrid.classList.remove('hidden');
     
-    const renderFilteredProducts = (category: string) => {
-      showShop();
-      const filtered = category === 'All Products' 
-        ? allProducts 
-        : allProducts.filter(p => p.category === category);
-      
-      renderProducts(filtered, productGrid, (product: Product) => {
-        addToCart(product);
-        updateUI();
-        showNotification(`${product.name} added to cart!`);
-      });
-    };
-
     // Initial render
     renderFilteredProducts('All Products');
 
@@ -203,7 +211,110 @@ async function init() {
   cartClose.addEventListener('click', closeCart);
   cartOverlay.addEventListener('click', closeCart);
 
-  // 3. UI Update Helper
+  // 3. Mobile Menu Logic
+  const openMobileMenu = () => {
+    mobileMenu.classList.remove('hidden');
+    setTimeout(() => {
+      mobileMenu.classList.remove('opacity-0');
+      mobileMenuContent.classList.remove('-translate-x-full');
+    }, 10);
+  };
+
+  const closeMobileMenu = () => {
+    mobileMenu.classList.add('opacity-0');
+    mobileMenuContent.classList.add('-translate-x-full');
+    setTimeout(() => {
+      mobileMenu.classList.add('hidden');
+    }, 300);
+  };
+
+  mobileMenuToggle.addEventListener('click', openMobileMenu);
+  mobileMenuClose.addEventListener('click', closeMobileMenu);
+  mobileMenu.addEventListener('click', (e) => {
+    if (e.target === mobileMenu) closeMobileMenu();
+  });
+
+  // Accordion Logic
+  accordionBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const content = btn.nextElementSibling as HTMLElement;
+      const icon = btn.querySelector('svg')!;
+      
+      const isOpen = !content.classList.contains('hidden');
+      
+      // Close all other accordions (optional, but cleaner)
+      accordionBtns.forEach(otherBtn => {
+        if (otherBtn !== btn) {
+          otherBtn.nextElementSibling?.classList.add('hidden');
+          otherBtn.querySelector('svg')?.classList.remove('rotate-180');
+        }
+      });
+
+      if (isOpen) {
+        content.classList.add('hidden');
+        icon.classList.remove('rotate-180');
+      } else {
+        content.classList.remove('hidden');
+        icon.classList.add('rotate-180');
+      }
+    });
+  });
+
+  // Mobile Nav Link Logic
+  mobileNavLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = (e.currentTarget as HTMLElement).getAttribute('data-target');
+      const wigType = (e.currentTarget as HTMLElement).getAttribute('data-wig-type');
+      const bundleType = (e.currentTarget as HTMLElement).getAttribute('data-bundle-type');
+
+      closeMobileMenu();
+
+      if (target === 'home') {
+        categoryFilter.value = 'All Products';
+        renderFilteredProducts('All Products');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (target === 'shop') {
+        categoryFilter.value = 'All Products';
+        renderFilteredProducts('All Products');
+        document.getElementById('shop-section')?.scrollIntoView({ behavior: 'smooth' });
+      } else if (target === 'about') {
+        showAbout();
+      } else if (target === 'contact') {
+        showContact();
+      } else if (wigType) {
+        showShop();
+        categoryFilter.value = 'Wigs';
+        if (wigType === 'All') {
+          renderFilteredProducts('Wigs');
+        } else {
+          const filtered = allProducts.filter(p => p.category === 'Wigs' && p.subCategory === wigType);
+          renderProducts(filtered, productGrid, (product: Product) => {
+            addToCart(product);
+            updateUI();
+            showNotification(`${product.name} added to cart!`);
+          });
+        }
+        document.getElementById('shop-section')?.scrollIntoView({ behavior: 'smooth' });
+      } else if (bundleType) {
+        showShop();
+        categoryFilter.value = 'Bundles';
+        if (bundleType === 'All') {
+          renderFilteredProducts('Bundles');
+        } else {
+          const filtered = allProducts.filter(p => p.category === 'Bundles' && p.subCategory === bundleType);
+          renderProducts(filtered, productGrid, (product: Product) => {
+            addToCart(product);
+            updateUI();
+            showNotification(`${product.name} added to cart!`);
+          });
+        }
+        document.getElementById('shop-section')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+  // 4. UI Update Helper
   function updateUI() {
     const cart = getCart();
     const count = cart.reduce((sum, item) => sum + item.quantity, 0);
