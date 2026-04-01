@@ -42,26 +42,26 @@ export function renderProducts(products: Product[], container: HTMLElement, onAd
           title: "Join the Royalty Club",
           desc: "Subscribe to our newsletter and get exclusive access to new arrivals and secret sales.",
           btn: "Join Now",
-          seed: "royal"
+          image: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&q=80&w=1200"
         },
         {
           title: "Premium Bundle Deals",
           desc: "Save up to 15% when you buy 3 or more bundles. Quality hair that lasts for years.",
           btn: "Shop Deals",
-          seed: "bundles"
+          image: "https://images.unsplash.com/photo-1516914915600-896acb9c0373?auto=format&fit=crop&q=80&w=1200"
         },
         {
           title: "Custom Wig Services",
           desc: "Get your dream wig hand-crafted by our expert stylists. Perfect fit guaranteed.",
           btn: "Book Service",
-          seed: "wigs"
+          image: "https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?auto=format&fit=crop&q=80&w=1200"
         }
       ][(bannerIndex - 1) % 3];
 
       html += `
         <div class="col-span-full my-12">
           <div class="product-banner relative h-64 md:h-80 rounded-[2rem] overflow-hidden bg-black text-white flex items-center justify-center group/banner shadow-2xl">
-            <img src="https://picsum.photos/seed/hair-ad-${bannerContent.seed}/1200/400" class="absolute inset-0 w-full h-full object-cover opacity-40 transition-transform duration-1000 group-hover/banner:scale-110" referrerpolicy="no-referrer" />
+            <img src="${bannerContent.image}" class="absolute inset-0 w-full h-full object-cover opacity-40 transition-transform duration-1000 group-hover/banner:scale-110" referrerpolicy="no-referrer" />
             <div class="absolute inset-0 banner-gradient z-[5]"></div>
             <div class="relative z-10 text-center px-8">
               <span class="inline-block px-4 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-serif font-bold italic uppercase tracking-widest mb-4">Special Promotion</span>
