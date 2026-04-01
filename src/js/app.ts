@@ -5,7 +5,7 @@ import { fetchProducts, Product } from './api';
 import { addToCart, updateQuantity, removeFromCart, getCart, generateWhatsAppLink } from './cart';
 import { renderProducts, renderCart, showNotification } from './ui';
 
-const WHATSAPP_NUMBER = "07013339219"; // Updated vendor number
+const WHATSAPP_NUMBER = "+2347013339219"; // Updated vendor number with country code
 
 async function init() {
   const productGrid = document.getElementById('product-grid')!;
