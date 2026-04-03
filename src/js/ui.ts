@@ -79,7 +79,7 @@ export function renderProducts(products: Product[], container: HTMLElement, onAd
   // Add event listeners
   container.querySelectorAll('.add-to-cart-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const id = parseInt(btn.getAttribute('data-id') || '0');
+      const id = btn.getAttribute('data-id') || '';
       const product = products.find(p => p.id === id);
       if (product) onAddToCart(product);
     });
@@ -88,8 +88,8 @@ export function renderProducts(products: Product[], container: HTMLElement, onAd
 
 export function renderCart(
   container: HTMLElement, 
-  onUpdateQty: (id: number, action: 'inc' | 'dec') => void,
-  onRemove: (id: number) => void
+  onUpdateQty: (id: string, action: 'inc' | 'dec') => void,
+  onRemove: (id: string) => void
 ) {
   const cart = getCart();
   const total = calculateTotal();
@@ -138,13 +138,13 @@ export function renderCart(
 
   // Event listeners
   container.querySelectorAll('.qty-inc').forEach(btn => {
-    btn.addEventListener('click', () => onUpdateQty(parseInt(btn.getAttribute('data-id')!), 'inc'));
+    btn.addEventListener('click', () => onUpdateQty(btn.getAttribute('data-id')!, 'inc'));
   });
   container.querySelectorAll('.qty-dec').forEach(btn => {
-    btn.addEventListener('click', () => onUpdateQty(parseInt(btn.getAttribute('data-id')!), 'dec'));
+    btn.addEventListener('click', () => onUpdateQty(btn.getAttribute('data-id')!, 'dec'));
   });
   container.querySelectorAll('.remove-item').forEach(btn => {
-    btn.addEventListener('click', () => onRemove(parseInt(btn.getAttribute('data-id')!)));
+    btn.addEventListener('click', () => onRemove(btn.getAttribute('data-id')!));
   });
 }
 

@@ -5,7 +5,9 @@ import { fetchProducts, Product } from './api';
 import { addToCart, updateQuantity, removeFromCart, getCart, generateWhatsAppLink } from './cart';
 import { renderProducts, renderCart, showNotification } from './ui';
 
-const WHATSAPP_NUMBER = "+2347013339219"; // Updated vendor number with country code
+import { trpc } from './trpc';
+
+let WHATSAPP_NUMBER = "+2347013339219"; // Default vendor number
 
 async function init() {
   const productGrid = document.getElementById('product-grid')!;
@@ -75,6 +77,61 @@ async function init() {
       showNotification(`${product.name} added to cart!`);
     });
   };
+
+  // 0. Fetch Settings and Update UI
+  try {
+    const settings = await trpc.getSettings.query();
+    if (settings) {
+      // Update Site Name
+      if (settings.siteName) {
+        document.title = `${settings.siteName} | Premium Hair Vendor`;
+        const logo = document.getElementById('logo-link');
+        if (logo) logo.innerText = settings.siteName;
+        const footerLogo = document.getElementById('footer-logo');
+        if (footerLogo) footerLogo.innerText = settings.siteName;
+        const mobileLogo = document.getElementById('mobile-menu-logo');
+        if (mobileLogo) mobileLogo.innerText = settings.siteName;
+      }
+
+      // Update WhatsApp
+      if (settings.whatsapp) {
+        WHATSAPP_NUMBER = settings.whatsapp;
+        const contactWhatsApp = document.getElementById('contact-whatsapp');
+        if (contactWhatsApp) contactWhatsApp.innerText = settings.whatsapp;
+      }
+
+      // Update Email
+      if (settings.email) {
+        const contactEmail = document.getElementById('contact-email');
+        if (contactEmail) contactEmail.innerText = settings.email;
+      }
+
+      // Update Address
+      if (settings.address) {
+        const contactAddress = document.getElementById('contact-address');
+        if (contactAddress) contactAddress.innerText = settings.address;
+      }
+
+      // Update Hero Section
+      if (settings.heroImage) {
+        const heroSlide1 = document.querySelector('.hero-slide img') as HTMLImageElement;
+        if (heroSlide1) heroSlide1.src = settings.heroImage;
+      }
+      
+      const heroTitle = document.querySelector('.hero-slide h1');
+      if (heroTitle && (settings.siteName || settings.bannerText)) {
+        heroTitle.innerHTML = `${settings.siteName || 'Guss Hairs'} <br/><span class="italic font-light">${settings.bannerText || 'Premium Quality'}</span>`;
+      }
+
+      // Update Advert Text
+      if (settings.advertText) {
+        const footerDesc = document.getElementById('footer-description');
+        if (footerDesc) footerDesc.innerText = settings.advertText;
+      }
+    }
+  } catch (err) {
+    console.error("Failed to load settings", err);
+  }
 
   // 1. Fetch and Render Products
   try {
@@ -322,11 +379,11 @@ async function init() {
     
     renderCart(
       cartItemsContainer,
-      (id, action) => {
+      (id: string, action: 'inc' | 'dec') => {
         updateQuantity(id, action);
         updateUI();
       },
-      (id) => {
+      (id: string) => {
         removeFromCart(id);
         updateUI();
       }
@@ -334,12 +391,33 @@ async function init() {
   }
 
   // 4. Checkout Logic
-  checkoutBtn.addEventListener('click', () => {
-    const link = generateWhatsAppLink(WHATSAPP_NUMBER);
-    if (link) {
-      window.open(link, '_blank');
-    } else {
+  checkoutBtn.addEventListener('click', async () => {
+    const cart = getCart();
+    if (cart.length === 0) {
       showNotification("Your cart is empty!");
+      return;
+    }
+
+    try {
+      // Create order in backend
+      await trpc.createOrder.mutate({
+        customerName: "Web Customer",
+        totalAmount: cart.reduce((total, item) => total + (item.price * item.quantity), 0).toString(),
+        items: cart.map(item => ({
+          id: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price
+        }))
+      });
+
+      const whatsappLink = generateWhatsAppLink(WHATSAPP_NUMBER);
+      if (whatsappLink) {
+        window.open(whatsappLink, '_blank');
+      }
+    } catch (err) {
+      console.error("Order creation failed", err);
+      showNotification("Failed to create order. Please try again.");
     }
   });
 

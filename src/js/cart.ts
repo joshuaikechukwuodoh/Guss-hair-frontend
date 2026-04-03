@@ -27,12 +27,12 @@ export function addToCart(product: Product) {
   saveCart();
 }
 
-export function removeFromCart(productId: number) {
+export function removeFromCart(productId: string) {
   cart = cart.filter(item => item.id !== productId);
   saveCart();
 }
 
-export function updateQuantity(productId: number, action: 'inc' | 'dec') {
+export function updateQuantity(productId: string, action: 'inc' | 'dec') {
   const item = cart.find(item => item.id === productId);
   if (item) {
     if (action === 'inc') {
